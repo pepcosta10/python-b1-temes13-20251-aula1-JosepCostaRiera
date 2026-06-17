@@ -48,31 +48,84 @@ el valor pasado como filtro y la oración tiene una longitud de la cadena de tex
 from util_package import text_manager 
 from util_package.text_manager import TEXT, is_newline, is_space, remove_punctuation_marks
 
+
 def find_largest_word(text):
-    # Write here your code
-    pass                
+    largest = ""
+    current = ""
+    for char in text:
+        if is_space(char) or is_newline(char):
+            word = remove_punctuation_marks(current)
+            if len(word) > len(largest):
+                largest = word
+            current = ""
+        else:
+            current += char
+    # No oblidis l'última paraula!
+    word = remove_punctuation_marks(current)
+    if len(word) > len(largest):
+        largest = word
+    return largest
+
+print(find_largest_word(
+        "Hola este es mi libro de matemáticas"))
 
 def is_palindrome_word(word):
-    # Write here your code
-    pass
+    clean = remove_punctuation_marks(word).lower()
+    if len(clean) <= 1:           # cas base
+        return True
+    if clean[0] != clean[-1]:     # extrems diferents -> no és palíndrom
+        return False
+    return is_palindrome_word(clean[1:-1])   # crida recursiva amb el tros del mig
+    
+    
     
 
 
 def count_palindrome_words(text):
-    # Write here your code
-    pass
+    count = 0
+    current = ""
+    for char in text:
+         if is_space(char) or is_newline(char):
+            word = remove_punctuation_marks(current) 
+            if is_palindrome_word(word):
+                count += 1
+            current = ""
+         else:
+            current += char
+    # No oblidis l'última paraula!
+    word = remove_punctuation_marks(current)
+    if is_palindrome_word(word):
+        count += 1
+    return count
 
 
 def find_size_largest_sentence(text, filter):
-    # Write here your code
-    pass
+    max_length = -1
+    current = ""
+    for char in text:
+        if is_newline(char):
+            if filter in current and len(current) > max_length:
+                max_length = len(current)
+            current = ""
+        else:
+            current += char
+    # última oració
+    if filter in current and len(current) > max_length:
+        max_length = len(current)
+    if max_length == -1:                # cap oració contenia el filtre
+        raise ValueError("Cap oració conté el filtre indicat")
+    return max_length
 
 
 # Si quieres probar tu código, descomenta las siguientes líneas y ejecuta el script
-#print("La palabra mas larga es:", find_largest_word(TEXT))
-#print("'aa' es un palíndromo su resultado es:", is_palindrome_word("aa"))
+print("La palabra mas larga es:", find_largest_word(TEXT))
+
+
+print("'aa' es un palíndromo su resultado es:", is_palindrome_word("aitia"))
+
+
 #print("'abx' no un palíndromo su resultado es:", is_palindrome_word("abx"))
 #print("'a' es un palíndromo su resultado es:", is_palindrome_word("a"))
 #print("'Ababa' es palíndromo su resultado es:", is_palindrome_word("Ababa"))
-#print("El número de palabras identificadas como palíndromos es:", count_palindrome_words(TEXT))
-#print("El tamaño de la oración más larga con el filtro='a', es :", find_size_largest_sentence(TEXT, "melon"))
+print("El número de palabras identificadas como palíndromos es:", count_palindrome_words("La casa de la judit i l ana"))
+print("El tamaño de la oración más larga con el filtro='a', es :", find_size_largest_sentence(TEXT, "melon"))
